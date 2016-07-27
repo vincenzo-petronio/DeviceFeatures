@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DeviceFeatures</string>
+
+    <string name="nd">n.d.</string>
+    <string name="play_services">Play Services: %1$s</string>
+    <string name="opengl">OpenGL: %1$s</string>
+    <string name="density">Density: %1$sx (%2$s DPI)</string>
+    <string name="size">Screen Size HxW: %1$sx%2$s pixel (%3$sx%4$s DPI)</string>
+</resources>
