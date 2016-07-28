@@ -4,6 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import android.content.pm.FeatureInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         checkOpenGL();
         checkDpi();
         checkSize();
+        checkAPI();
 
         // INIT
         lvItems.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
@@ -92,5 +94,12 @@ public class MainActivity extends AppCompatActivity {
         );
 
         items.add(size);
+    }
+
+    private void checkAPI() {
+        String api = String.format(getResources().getString(R.string.api),
+                Integer.toString(Build.VERSION.SDK_INT), Build.VERSION.RELEASE);
+
+        items.add(api);
     }
 }
