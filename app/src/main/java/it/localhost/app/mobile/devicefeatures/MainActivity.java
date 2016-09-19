@@ -3,6 +3,8 @@ package it.localhost.app.mobile.devicefeatures;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import com.jaredrummler.android.device.DeviceName;
+
 import android.content.pm.FeatureInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
         checkDpi();
         checkSize();
         checkAPI();
+        checkDeviceName();
 
         // INIT
-        lvItems.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
+        lvItems.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items));
     }
 
 
@@ -101,5 +104,12 @@ public class MainActivity extends AppCompatActivity {
                 Integer.toString(Build.VERSION.SDK_INT), Build.VERSION.RELEASE);
 
         items.add(api);
+    }
+
+    private void checkDeviceName() {
+        String deviceName = String.format(getResources().getString(R.string.device_name),
+                DeviceName.getDeviceName());
+
+        items.add(deviceName);
     }
 }

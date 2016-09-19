@@ -7,4 +7,5 @@
     <string name="density">Density: %1$sx (%2$s DPI)</string>
     <string name="size">Screen Size HxW: %1$sx%2$s pixel (%3$sx%4$s DPI)</string>
     <string name="api">API: version %1$s - release %2$s</string>
+    <string name="device_name">Device Model: %1$s</string>
 </resources>
