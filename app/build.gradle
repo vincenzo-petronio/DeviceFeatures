@@ -21,7 +21,7 @@ android {
         release {
             minifyEnabled true
             useProguard true
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -39,4 +39,5 @@ dependencies {
     compile 'com.jaredrummler:android-device-names:1.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.9'
+    compile 'com.artemzin.rxjava:proguard-rules:1.1.9.0'
 }
