@@ -21,6 +21,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -31,13 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvItems;
     private List<String> items = new ArrayList<>();
     private Context mContext;
-
-    private Observable<String> playServicesObservable;
-    private Observable<String> openGLObservable;
-    private Observable<String> dpiObservable;
-    private Observable<String> sizeObservable;
-    private Observable<String> apiObservable;
-    private Observable<String> deviceNameObservable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,25 +44,23 @@ public class MainActivity extends AppCompatActivity {
 
         // INIT
         mContext = this;
-        playServicesObservable = Observable.create(playServicesAction).subscribeOn(Schedulers.io());
-        openGLObservable = Observable.create(openGLAction).subscribeOn(Schedulers.io());
-        dpiObservable = Observable.create(dpiAction).subscribeOn(Schedulers.io());
-        sizeObservable = Observable.create(sizeAction).subscribeOn(Schedulers.io());
-        apiObservable = Observable.create(apiAction).subscribeOn(Schedulers.io());
-        deviceNameObservable = Observable.create(deviceNameAction).subscribeOn(Schedulers.io());
 
-        Observable.mergeDelayError(
-                playServicesObservable,
-                openGLObservable,
-                dpiObservable,
-                sizeObservable,
-                apiObservable,
-                deviceNameObservable)
+        // SETUP
+        items.add(checkPlayServices());
+        items.add(checkOpenGL());
+        items.add(checkDpi());
+        items.add(checkSize());
+        items.add(checkAPI());
+        items.add(checkDeviceName());
+
+        Observable.create(itemsAction) // qui creo la sorgente di dati
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(itemsFunc)
                 .subscribe(lvItemsSubscriber);
     }
 
+    // Qui definisco il consumatore dei dati
     Subscriber<String> lvItemsSubscriber = new Subscriber<String>() {
         @Override
         public void onCompleted() {
@@ -78,77 +70,29 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "[Rx]onError" + " " + e.getMessage());
+            Log.e(TAG, "[Rx]onError" + " " + e);
         }
 
         @Override
         public void onNext(String strings) {
             Log.v(TAG, "[Rx]onNext" + " " + strings);
-            items.add(strings);
-        }
-    };
-    
-    // ACTIONS
-
-    Observable.OnSubscribe playServicesAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: playServicesAction");
-
-            subscriber.onNext(checkPlayServices());
-            subscriber.onCompleted();
         }
     };
 
-    Observable.OnSubscribe openGLAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: openGLAction");
+    /**
+     * ACtion che viene chiamata quando un Subscriber si sottoscrive all'Observable
+     */
+    Observable.OnSubscribe<List<String>> itemsAction = subscriber -> {
+        Log.v(TAG, "[Rx]call: itemsAction");
 
-            subscriber.onNext(checkOpenGL());
-            subscriber.onCompleted();
-        }
+        subscriber.onNext(items);
+        subscriber.onCompleted();
     };
 
-    Observable.OnSubscribe dpiAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: dpiAction");
-
-            subscriber.onNext(checkDpi());
-            subscriber.onCompleted();
-        }
-    };
-
-    Observable.OnSubscribe sizeAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: sizeAction");
-
-            subscriber.onNext(checkSize());
-            subscriber.onCompleted();
-        }
-    };
-
-    Observable.OnSubscribe apiAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: apiAction");
-
-            subscriber.onNext(checkAPI());
-            subscriber.onCompleted();
-        }
-    };
-
-    Observable.OnSubscribe deviceNameAction = new Observable.OnSubscribe<String>() {
-        @Override
-        public void call(Subscriber<? super String> subscriber) {
-            Log.v(TAG, "call: deviceNameAction");
-
-            subscriber.onNext(checkDeviceName());
-            subscriber.onCompleted();
-        }
-    };
+    /**
+     * Function che prende una List di Strings e le emette una ad una.
+     */
+    Func1<List<String>, Observable<String>> itemsFunc = Observable::from;
 
     // DATA
     private String checkPlayServices() {
