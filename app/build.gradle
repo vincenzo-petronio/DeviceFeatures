@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
@@ -8,19 +9,25 @@ android {
         applicationId "it.localhost.app.mobile.devicefeatures"
         minSdkVersion 9
         targetSdkVersion 24
-        versionCode 3
-        versionName "1.2.0"
+        versionCode 4
+        versionName "2.0.0"
     }
     buildTypes {
         debug {
-//            minifyEnabled true
-//            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
+            versionNameSuffix '_DEBUG'
         }
         release {
             minifyEnabled true
+            useProguard true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -30,4 +37,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.google.android.gms:play-services-base:9.4.0'
     compile 'com.jaredrummler:android-device-names:1.1.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.9'
 }
